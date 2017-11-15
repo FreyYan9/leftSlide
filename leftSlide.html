@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>left slide to delete</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style type="text/css">
+    * {
+        margin: 0;
+        padding: 0;
+        /*box-sizing: border-box;*/
+    }
+
+    body {
+        font-size: .36rem;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    i {
+        font-style: normal;
+    }
+
+    a {
+        color: #393939;
+        text-decoration: none;
+    }
+
+    .container {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .container li {
+        margin-bottom: .1rem 0;
+        height: 1rem;
+        width: 120%;
+        line-height: 1rem;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .container li div {
+        height: 1rem;
+        line-height: 1rem;
+
+        -webkit-transition: all 0.3s linear;
+        transition: all 0.3s linear;
+    }
+
+    .container li div span {
+        padding-left: .2rem;
+        font-family: cursive;
+    }
+
+    .container li div i {
+        float: right;
+        width: 15%;
+        text-align: center;
+        background: #E2421B;
+        color: #fff;
+        font-size: .32rem;
+        letter-spacing: .1rem;
+    }
+
+    .swiperleft {
+        transform: translateX(-15%);
+        -webkit-transform: translateX(-15%);
+    }
+
+    .removeUp {
+        transform: translateY(1rem);
+        -webkit-transform: translateY(1rem);
+    }
+    </style>
+    <script>
+    //计算根节点HTML的字体大小
+    function resizeRoot() {
+        var deviceWidth = document.documentElement.clientWidth,
+            num = 750,
+            num1 = num / 100;
+        if (deviceWidth > num) {
+            deviceWidth = num;
+        }
+        document.documentElement.style.fontSize = deviceWidth / num1 + "px";
+    }
+    //根节点HTML的字体大小初始化
+    resizeRoot();
+
+    window.onresize = function() {
+        resizeRoot();
+    };
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <ul>
+            <li>
+                <div><span>hello this is item1</span><i>删除</i></div>
+            </li>
+            <li>
+                <div><span>hello this is item2</span><i>删除</i></div>
+            </li>
+            <li>
+                <div><span>hello this is item3</span><i>删除</i></div>
+            </li>
+            <li>
+                <div><span>hello this is item4</span><i>删除</i></div>
+            </li>
+            <li>
+                <div><span>hello this is item5</span><i>删除</i></div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script type="text/javascript">
+var container = document.querySelectorAll('.container li div');
+
+var expansion = void 0;
+var x, y, X, Y, swiperX, swiperY;
+for (var i = 0; i < container.length; i++) {
+
+    container[i].addEventListener('touchstart', function(event) {
+        x = event.changedTouches[0].pageX;
+        y = event.changedTouches[0].pageY;
+
+        swiperX = swiperY = true;
+
+        if (expansion && expansion != this) {
+            expansion.className = '';
+        }
+
+    });
+
+    container[i].addEventListener('touchmove', function(event) {
+        X = event.changedTouches[0].pageX;
+        Y = event.changedTouches[0].pageY;
+        
+        console.log('x: ' + x, 'X: ' + X, '\ny: ' + y, 'Y: ' + Y);
+
+        if (X - x < 0) {
+            console.log(' to left');
+        }
+        if (X - x > 0) {
+            console.log(' to right');
+        }
+        if (Y - y < 0) {
+            console.log(' to up');
+        }
+        if (Y - y > 0) {
+            console.log(' to down');
+        }
+        if (swiperX && Math.abs(X - x) - Math.abs(Y - y) > 0) {
+            event.stopPropagation();
+
+            // to right
+            if (X - x > 10) {
+                event.preventDefault();
+                this.className = '';
+            }
+
+            // to left
+            if (X - x < 10) {
+                event.preventDefault();
+                expansion = this;
+                expansion.className = 'swiperleft';
+            }
+
+            swiperY = false;
+        }
+
+        // up and down
+        if (swiperX && Math.abs(X - x) - Math.abs(Y - y) < 0) {
+            swiperX = false;
+        }
+    });
+
+    container[i].lastChild.addEventListener('click', function() {
+        var parent = this.parentNode.parentNode;
+        document.querySelectorAll('.container ul')[0].removeChild(parent)
+    });
+}
+</script>
+
+</html>
